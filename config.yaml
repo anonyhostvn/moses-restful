@@ -1,5 +1,5 @@
 sample-models:
-    in: '/home/moses/moses-models/sample-models/phrase-model/in'
-    out: '/home/moses/moses-models/sample-models/out'
-    homeDir: '/home/moses/moses-models/sample-models'
+    in: '/home/longnhit/testing_folder/sample-models/phrase-model/in'
+    out: '/home/longnhit/testing_folder/sample-models/out'
+    homeDir: '/home/longnhit/testing_folder/sample-models'
     command: '/home/longnhit/workspace/mosesdecoder/bin/moses -f /home/longnhit/workspace/translation-es-en/train-result/model/moses.ini < phrase-model/in > out'
