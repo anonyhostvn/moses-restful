@@ -1,11 +1,17 @@
 from flask import request, Flask
-import subprocess
+from subprocess import Popen, PIPE, STDOUT
 import yaml
 from werkzeug.utils import secure_filename
 import time
 
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
+
+with open('/home/longnhit/workspace/moses-restful/config.yaml', 'r') as f:
+    doc = yaml.load(f)
+    runCommand = doc['sample-models']['command']
+    homeDir = doc['sample-models']['homeDir']
+    p = Popen([runCommand], cwd=homeDir, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
 
 
 def allowed_file(filename):
@@ -25,15 +31,16 @@ def translate(text):
     homeDir = doc['sample-models']['homeDir']
     runCommand = doc['sample-models']['command']
     status = 'Files successfully read'
-    subprocess.call(['rm {} && rm {}'.format(fileIn, fileOut)], shell=True)
+    # subprocess.call(['rm {} && rm {}'.format(fileIn, fileOut)], shell=True)
     text8 = text.encode('utf8')
     inputFile = open(fileIn, 'w')
     inputFile.write(text8.decode('utf8') + '\n')
     inputFile.close()
-    subprocess.call([runCommand], cwd=homeDir, shell=True)
-    readTranslate = open(fileOut, 'r')
-    translatedText = readTranslate.read()
-    readTranslate.close()
+    # subprocess.call([runCommand], cwd=homeDir, shell=True)
+    # readTranslate = open(fileOut, 'r')
+    # translatedText = readTranslate.read()
+    translated_text = p.communicate(text)[0].rstrip()
+    # readTranslate.close()
     return {
             "STATUS": status,
             "LAN": 'N/A',
@@ -43,8 +50,8 @@ def translate(text):
             "INPUT": text.encode('utf8'),
             "INPUT_SIZE": len(text.encode('utf8')),
             "INPUT_PATH": str(fileIn),            
-            "OUTPUT": translatedText.encode('utf8').rstrip(),
-            "OUTPUT_SIZE": len(translatedText.encode('utf8')),
+            "OUTPUT": translated_text,
+            "OUTPUT_SIZE": len(translated_text),
             "OUTPUT_PATH": str(fileOut),
             "DURATION": '%.3f seconds' % (time.time() - start_time)
     }
