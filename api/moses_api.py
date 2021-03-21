@@ -1,13 +1,10 @@
-from flask import request, url_for
-from flask.ext.api import FlaskAPI, status, exceptions
+from flask import request, Flask
 import subprocess
 import yaml
-from werkzeug import secure_filename
-import codecs
-import json
+from werkzeug.utils import secure_filename
 import time
 
-app = FlaskAPI(__name__)
+app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 
 
@@ -35,14 +32,14 @@ def translate(text):
     inputFile.close()
     subprocess.call([runCommand], cwd=homeDir, shell=True)
     readTranslate = open(fileOut, 'r')
-    translatedText = readTranslate.read().decode('utf8')
+    translatedText = readTranslate.read()
     readTranslate.close()
     return {
             "STATUS": status,
             "LAN": 'N/A',
             "MODEL": str(homeDir),
             "CMD": str(runCommand),
-            "URL": request.host_url.rstrip('/').decode().encode('utf8'),
+            "URL": request.host_url.rstrip('/').encode('utf8'),
             "INPUT": text.encode('utf8'),
             "INPUT_SIZE": len(text.encode('utf8')),
             "INPUT_PATH": str(fileIn),            
@@ -63,7 +60,7 @@ def user_get(text):
     """
     Translate text
     """
-    text = translate(text.decode('utf8'))
+    text = translate(text)
     return text
 
 
@@ -75,7 +72,7 @@ def upload():
     file = request.files['name']
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        text = file.read().decode('utf8')
+        text = file.read()
         text = translate(text)
         return text
     else:
