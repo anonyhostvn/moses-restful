@@ -18,14 +18,14 @@ def translate(text):
     """
     Run translation model using config
     """
-    with open('/home/moses/Downloads/moses-api/config.yaml', 'r') as f:
+    with open('/home/longnhit/workspace/moses-restful/config.yaml', 'r') as f:
         doc = yaml.load(f)
     fileIn = doc['sample-models']['in']
     fileOut = doc['sample-models']['out']
     homeDir = doc['sample-models']['homeDir']
     runCommand = doc['sample-models']['command']
     status = 'Files successfully read'
-    subprocess.call(['rm %s && rm %s' % (fileIn, fileOut)], shell=True)
+    subprocess.call(['rm {} && rm {}'.format(fileIn, fileOut)], shell=True)
     text8 = text.encode('utf8')
     inputFile = open(fileIn, 'w')
     inputFile.write(text8 + '\n')
