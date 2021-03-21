@@ -28,7 +28,7 @@ def translate(text):
     subprocess.call(['rm {} && rm {}'.format(fileIn, fileOut)], shell=True)
     text8 = text.encode('utf8')
     inputFile = open(fileIn, 'w')
-    inputFile.write(text8 + b'\n')
+    inputFile.write(text8.decode('utf8') + '\n')
     inputFile.close()
     subprocess.call([runCommand], cwd=homeDir, shell=True)
     readTranslate = open(fileOut, 'r')
